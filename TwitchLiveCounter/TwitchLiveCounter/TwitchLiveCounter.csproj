@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SimpleJson.cs" />
     <Compile Include="TwitchLiveCounter.cs">
       <SubType>Form</SubType>
     </Compile>
