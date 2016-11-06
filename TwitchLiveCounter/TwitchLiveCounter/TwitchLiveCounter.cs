@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using RestSharp;
 using Newtonsoft.Json;
+using System.IO;
+using System.Collections.Specialized;
+
+/*
+ * TODO
+ * 1) fix the clearing of the lists
+ * 2) parse the data returned from Twitch
+ * 3) figure out if it is better to grab totals from twitch API or just use the count from the listview
+ * 4) see 3, might be easier to also refacter code so the listview is populated from another list when needed
+ */
+
 
 namespace TwitchLiveCounter
 {
@@ -24,18 +31,38 @@ namespace TwitchLiveCounter
         }
 
         private void TwitchLiveCounter_Load(object sender, EventArgs e) {
-            
+
+            //load all of the settings from persistant storage
+
+            //username
+            if (Properties.Settings.Default.twitchUsernameSettings != null) {
+                twitchUsernameTextBox.Text = Properties.Settings.Default.twitchUsernameSettings;
+            }
+            //followed accounts
+            if (Properties.Settings.Default.followedUsersSettingsCollection != null) {
+                StringCollection collection = new StringCollection();
+                collection = Properties.Settings.Default.followedUsersSettingsCollection;
+                List<string> followedList = collection.Cast<string>().ToList();
+
+                foreach (var item in followedList) {
+                    followerListView.Items.Add(item);
+                }
+                Usernames.Width = followerListView.Size.Width - 21;
+            }
+            //number of followed accounts
+            if (Properties.Settings.Default.numberOfFollowedUsers != null) {
+                totalFollowersLabel.Text = "Total Followers: " + Properties.Settings.Default.numberOfFollowedUsers;
+            }
 
         }
-        
         private void getLiveStatus() {
 
             var client = new RestClient();
-            client.BaseUrl = new Uri("https://api.twitch.tv/kraken/streams/");
+            client.BaseUrl = new Uri("https://api.twitch.tv/kraken/streams?channel=");
 
             var request = new RestRequest();
             request.Method = Method.GET;
-           // request.Resource = streamer[i];
+            request.Resource = usernameString + "?limit=100";
             request.AddHeader("Client-ID", "dsf248t4b6aririduqsh94h9ypzrb0i");
             request.AddHeader("accept", "application/vnd.twitchtv.v3+json");
             request.RequestFormat = DataFormat.Json;
@@ -46,7 +73,12 @@ namespace TwitchLiveCounter
 
             dynamic results = JsonConvert.DeserializeObject<dynamic>(response.Content);
 
-            
+            string mydocpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            // Append text to an existing file named "WriteLines.txt".
+            using (StreamWriter outputFile = new StreamWriter(mydocpath + @"\WriteLines.txt", true)) {
+                outputFile.WriteLine(response.Content);
+            }
 
         }
 
@@ -76,9 +108,10 @@ namespace TwitchLiveCounter
 
         private void getTwitchUsers_Click(object sender, EventArgs e) {
 
-            //followerList.Clear();
-            Usernames.Width = followerList.Size.Width - 21;
+            //followerListView.Clear();
+            Usernames.Width = followerListView.Size.Width - 21;
 
+           
             twitchUsername = twitchUsernameTextBox.Text;
 
             var client = new RestClient();
@@ -96,12 +129,26 @@ namespace TwitchLiveCounter
             var rootObj = JsonConvert.DeserializeObject<Rootobject>(response.Content);
 
             foreach (var row in rootObj.follows) {
-                Console.WriteLine(row.channel.display_name);
-                followerList.Items.Add(row.channel.display_name);
+                followerListView.Items.Add(row.channel.display_name);
                 usernameString += row.channel.display_name + ",";
             }
             totalFollowersLabel.Text = "Total Followers: " + rootObj._total.ToString();
-            Console.WriteLine(rootObj._total);
+            
+
+            var followerList = new List<string>();
+            foreach (ListViewItem Item in followerListView.Items) {
+                followerList.Add(Item.Text.ToString());
+            }
+
+            //create string collection from list of strings
+            StringCollection collection = new StringCollection();
+            collection.AddRange(followerList.ToArray());
+
+            //save settings to Settings.settings
+            Properties.Settings.Default.followedUsersSettingsCollection = collection;
+            Properties.Settings.Default.numberOfFollowedUsers = rootObj._total.ToString();
+            Properties.Settings.Default.twitchUsernameSettings = twitchUsername;
+            Properties.Settings.Default.Save();
             
         }
 

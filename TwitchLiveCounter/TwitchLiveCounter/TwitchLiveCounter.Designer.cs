@@ -30,7 +30,7 @@
         {
             this.getTwitchUsers = new System.Windows.Forms.Button();
             this.twitchUsernameTextBox = new System.Windows.Forms.TextBox();
-            this.followerList = new System.Windows.Forms.ListView();
+            this.followerListView = new System.Windows.Forms.ListView();
             this.Usernames = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.updateNowButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -49,7 +49,7 @@
             // 
             // getTwitchUsers
             // 
-            this.getTwitchUsers.Location = new System.Drawing.Point(134, 55);
+            this.getTwitchUsers.Location = new System.Drawing.Point(118, 51);
             this.getTwitchUsers.Name = "getTwitchUsers";
             this.getTwitchUsers.Size = new System.Drawing.Size(107, 23);
             this.getTwitchUsers.TabIndex = 0;
@@ -59,29 +59,29 @@
             // 
             // twitchUsernameTextBox
             // 
-            this.twitchUsernameTextBox.Location = new System.Drawing.Point(28, 58);
+            this.twitchUsernameTextBox.Location = new System.Drawing.Point(12, 53);
             this.twitchUsernameTextBox.Name = "twitchUsernameTextBox";
             this.twitchUsernameTextBox.Size = new System.Drawing.Size(100, 20);
             this.twitchUsernameTextBox.TabIndex = 1;
             this.twitchUsernameTextBox.TextChanged += new System.EventHandler(this.twitchUsernameTextBox_TextChanged);
             // 
-            // followerList
+            // followerListView
             // 
-            this.followerList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.followerListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Usernames});
-            this.followerList.FullRowSelect = true;
-            this.followerList.GridLines = true;
-            this.followerList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.followerList.Location = new System.Drawing.Point(28, 109);
-            this.followerList.Name = "followerList";
-            this.followerList.Size = new System.Drawing.Size(213, 130);
-            this.followerList.TabIndex = 2;
-            this.followerList.UseCompatibleStateImageBehavior = false;
-            this.followerList.View = System.Windows.Forms.View.Details;
+            this.followerListView.FullRowSelect = true;
+            this.followerListView.GridLines = true;
+            this.followerListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.followerListView.Location = new System.Drawing.Point(12, 104);
+            this.followerListView.Name = "followerListView";
+            this.followerListView.Size = new System.Drawing.Size(213, 130);
+            this.followerListView.TabIndex = 2;
+            this.followerListView.UseCompatibleStateImageBehavior = false;
+            this.followerListView.View = System.Windows.Forms.View.Details;
             // 
             // updateNowButton
             // 
-            this.updateNowButton.Location = new System.Drawing.Point(28, 295);
+            this.updateNowButton.Location = new System.Drawing.Point(12, 290);
             this.updateNowButton.Name = "updateNowButton";
             this.updateNowButton.Size = new System.Drawing.Size(213, 23);
             this.updateNowButton.TabIndex = 3;
@@ -92,17 +92,17 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(25, 39);
+            this.label1.Location = new System.Drawing.Point(12, 37);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(118, 13);
+            this.label1.Size = new System.Drawing.Size(90, 13);
             this.label1.TabIndex = 4;
-            this.label1.Text = "Enter Twitch Username";
+            this.label1.Text = "Twitch Username";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(28, 90);
+            this.label2.Location = new System.Drawing.Point(12, 85);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(201, 13);
             this.label2.TabIndex = 5;
@@ -110,7 +110,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(28, 260);
+            this.textBox2.Location = new System.Drawing.Point(12, 255);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(100, 20);
             this.textBox2.TabIndex = 6;
@@ -119,7 +119,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(131, 263);
+            this.label3.Location = new System.Drawing.Point(115, 258);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(110, 13);
             this.label3.TabIndex = 7;
@@ -133,7 +133,7 @@
             this.aboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(275, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(236, 24);
             this.menuStrip1.TabIndex = 8;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -176,7 +176,7 @@
             // totalFollowersLabel
             // 
             this.totalFollowersLabel.AutoSize = true;
-            this.totalFollowersLabel.Location = new System.Drawing.Point(28, 242);
+            this.totalFollowersLabel.Location = new System.Drawing.Point(12, 237);
             this.totalFollowersLabel.Name = "totalFollowersLabel";
             this.totalFollowersLabel.Size = new System.Drawing.Size(84, 13);
             this.totalFollowersLabel.TabIndex = 9;
@@ -186,14 +186,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(275, 325);
+            this.ClientSize = new System.Drawing.Size(236, 327);
             this.Controls.Add(this.totalFollowersLabel);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.updateNowButton);
-            this.Controls.Add(this.followerList);
+            this.Controls.Add(this.followerListView);
             this.Controls.Add(this.twitchUsernameTextBox);
             this.Controls.Add(this.getTwitchUsers);
             this.Controls.Add(this.menuStrip1);
@@ -212,7 +212,7 @@
 
         private System.Windows.Forms.Button getTwitchUsers;
         private System.Windows.Forms.TextBox twitchUsernameTextBox;
-        private System.Windows.Forms.ListView followerList;
+        private System.Windows.Forms.ListView followerListView;
         private System.Windows.Forms.Button updateNowButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;

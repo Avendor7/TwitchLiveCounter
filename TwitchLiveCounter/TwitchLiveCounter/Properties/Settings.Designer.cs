@@ -22,5 +22,40 @@ namespace TwitchLiveCounter.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string twitchUsernameSettings {
+            get {
+                return ((string)(this["twitchUsernameSettings"]));
+            }
+            set {
+                this["twitchUsernameSettings"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string numberOfFollowedUsers {
+            get {
+                return ((string)(this["numberOfFollowedUsers"]));
+            }
+            set {
+                this["numberOfFollowedUsers"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection followedUsersSettingsCollection {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["followedUsersSettingsCollection"]));
+            }
+            set {
+                this["followedUsersSettingsCollection"] = value;
+            }
+        }
     }
 }
