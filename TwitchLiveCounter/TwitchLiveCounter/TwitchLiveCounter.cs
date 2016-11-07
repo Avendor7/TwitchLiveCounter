@@ -13,7 +13,7 @@ using System.Collections.Specialized;
  * 1) fix the clearing of the lists
  * 2) parse the data returned from Twitch
  * 3) figure out if it is better to grab totals from twitch API or just use the count from the listview
- * 4) see 3, might be easier to also refacter code so the listview is populated from another list when needed
+ * 4) see 3, might be easier to also refactor code so the listview is populated from another list when needed
  */
 
 
@@ -60,48 +60,34 @@ namespace TwitchLiveCounter
             var client = new RestClient();
             client.BaseUrl = new Uri("https://api.twitch.tv/kraken/streams?channel=");
 
+            //usernameString += "PyrionFlax";
+
             var request = new RestRequest();
             request.Method = Method.GET;
-            request.Resource = usernameString + "?limit=100";
+            request.Resource = usernameString +"Pyrionflax" + "?limit=100";
             request.AddHeader("Client-ID", "dsf248t4b6aririduqsh94h9ypzrb0i");
             request.AddHeader("accept", "application/vnd.twitchtv.v3+json");
             request.RequestFormat = DataFormat.Json;
-
+            Console.WriteLine(usernameString);
             IRestResponse response = client.Execute(request);
 
-            // Console.WriteLine(response.Content);
-
-            dynamic results = JsonConvert.DeserializeObject<dynamic>(response.Content);
-
-            string mydocpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-            // Append text to an existing file named "WriteLines.txt".
-            using (StreamWriter outputFile = new StreamWriter(mydocpath + @"\WriteLines.txt", true)) {
-                outputFile.WriteLine(response.Content);
+            var rootObj = JsonConvert.DeserializeObject<RootObject>(response.Content);
+            Console.WriteLine(response.Content);
+            foreach (var row in rootObj.streams) {
+                Console.WriteLine(row.channel.display_name);
             }
+            
 
         }
 
         private void button2_Click(object sender, EventArgs e) {
             getLiveStatus();
         }
-
-        private void label1_Click(object sender, EventArgs e) {
-
-        }
-
+        
         private void textBox2_TextChanged(object sender, EventArgs e) {
 
         }
-
-        private void label3_Click(object sender, EventArgs e) {
-
-        }
-
-        private void groupBox1_Enter(object sender, EventArgs e) {
-
-        }
-
+        
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
             Application.Exit();
         }
@@ -111,30 +97,36 @@ namespace TwitchLiveCounter
             //followerListView.Clear();
             Usernames.Width = followerListView.Size.Width - 21;
 
-           
+            
             twitchUsername = twitchUsernameTextBox.Text;
 
+            //create rest client
             var client = new RestClient();
             client.BaseUrl = new Uri("https://api.twitch.tv/kraken/users/");
-
+            //create request
             var request = new RestRequest();
             request.Method = Method.GET;
             request.Resource = twitchUsername + "/follows/channels?limit=100";
             request.AddHeader("Client-ID", "dsf248t4b6aririduqsh94h9ypzrb0i");
             request.AddHeader("accept", "application/vnd.twitchtv.v3+json");
             request.RequestFormat = DataFormat.Json;
-          
+
+            //execute request
             IRestResponse response = client.Execute(request);
             
+            //parse returned content
             var rootObj = JsonConvert.DeserializeObject<Rootobject>(response.Content);
 
+            //loop through follows
             foreach (var row in rootObj.follows) {
                 followerListView.Items.Add(row.channel.display_name);
                 usernameString += row.channel.display_name + ",";
             }
+
+            //set the total followers CHANGE TO USE COUNT ON THE LIST VARIABLE
             totalFollowersLabel.Text = "Total Followers: " + rootObj._total.ToString();
             
-
+            //add 
             var followerList = new List<string>();
             foreach (ListViewItem Item in followerListView.Items) {
                 followerList.Add(Item.Text.ToString());
@@ -157,7 +149,7 @@ namespace TwitchLiveCounter
         }
     }
 
-    //twitch classes
+    //twitch GET /users/:user/follows/channels
 
     public class Rootobject {
         public Follow[] follows { get; set; }
@@ -204,6 +196,7 @@ namespace TwitchLiveCounter
         public string profile_banner_background_color { get; set; }
         public int views { get; set; }
         public string language { get; set; }
+        public Links links { get; set; }
     }
 
     public class _Links2 {
@@ -218,5 +211,56 @@ namespace TwitchLiveCounter
         public string teams { get; set; }
     }
 
+    public class Preview {
+        public string small { get; set; }
+        public string medium { get; set; }
+        public string large { get; set; }
+        public string template { get; set; }
+    }
+
+    public class Links {
+        public string self { get; set; }
+        public string follows { get; set; }
+        public string commercial { get; set; }
+        public string stream_key { get; set; }
+        public string chat { get; set; }
+        public string features { get; set; }
+        public string subscriptions { get; set; }
+        public string editors { get; set; }
+        public string teams { get; set; }
+        public string videos { get; set; }
+    }
+    
+    public class Links2 {
+        public string self { get; set; }
+    }
+
+    public class Stream {
+        public long _id { get; set; }
+        public string game { get; set; }
+        public int viewers { get; set; }
+        public int video_height { get; set; }
+        public double average_fps { get; set; }
+        public int delay { get; set; }
+        public string created_at { get; set; }
+        public bool is_playlist { get; set; }
+        public Preview preview { get; set; }
+        public Channel channel { get; set; }
+        public Links2 _links { get; set; }
+    }
+
+    public class Links3 {
+        public string self { get; set; }
+        public string next { get; set; }
+        public string featured { get; set; }
+        public string summary { get; set; }
+        public string followed { get; set; }
+    }
+
+    public class RootObject {
+        public int _total { get; set; }
+        public List<Stream> streams { get; set; }
+        public Links3 _links { get; set; }
+    }
 
 }

@@ -97,7 +97,6 @@
             this.label1.Size = new System.Drawing.Size(90, 13);
             this.label1.TabIndex = 4;
             this.label1.Text = "Twitch Username";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // label2
             // 
@@ -124,7 +123,6 @@
             this.label3.Size = new System.Drawing.Size(110, 13);
             this.label3.TabIndex = 7;
             this.label3.Text = "Update Interval (mins)";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // menuStrip1
             // 
