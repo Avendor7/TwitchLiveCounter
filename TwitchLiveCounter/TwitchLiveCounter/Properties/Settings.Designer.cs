@@ -37,29 +37,6 @@ namespace TwitchLiveCounter.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string numberOfFollowedUsers {
-            get {
-                return ((string)(this["numberOfFollowedUsers"]));
-            }
-            set {
-                this["numberOfFollowedUsers"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection followedUsersSettingsCollection {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["followedUsersSettingsCollection"]));
-            }
-            set {
-                this["followedUsersSettingsCollection"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int timerInterval {
             get {
@@ -67,6 +44,18 @@ namespace TwitchLiveCounter.Properties {
             }
             set {
                 this["timerInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string userList {
+            get {
+                return ((string)(this["userList"]));
+            }
+            set {
+                this["userList"] = value;
             }
         }
     }
