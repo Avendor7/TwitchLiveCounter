@@ -10,27 +10,31 @@ using System.Collections.Specialized;
 
 /*
  * TODO
- * 1) fix the clearing of the lists
- * 2) parse the data returned from Twitch
- * 3) figure out if it is better to grab totals from twitch API or just use the count from the listview
- * 4) see 3, might be easier to also refactor code so the listview is populated from another list when needed
+ * 1) create installer / uninstaller
+ * 2) dynamically change system icon
+ * 3) dynamically add items to the context list
+ * 4) 
  */
 
 
 namespace TwitchLiveCounter
 {
-    public partial class TwitchLiveCounter : Form
-    {
+    public partial class TwitchLiveCounter : Form {
 
         private string twitchUsername = "Avendor7";
-        private string usernameString = "";
-        
+        private List<string> twitchUsers = new List<string> { };
+        private List<LiveStatus> currentLive = new List<LiveStatus> { };
+        private int timerInterval = 300000;
+
         public TwitchLiveCounter(){
             InitializeComponent();
             
         }
 
         private void TwitchLiveCounter_Load(object sender, EventArgs e) {
+
+            //start the timer
+            updateTimer.Start();
 
             //load all of the settings from persistant storage
 
@@ -42,54 +46,119 @@ namespace TwitchLiveCounter
             if (Properties.Settings.Default.followedUsersSettingsCollection != null) {
                 StringCollection collection = new StringCollection();
                 collection = Properties.Settings.Default.followedUsersSettingsCollection;
-                List<string> followedList = collection.Cast<string>().ToList();
 
-                foreach (var item in followedList) {
+                //load saved string and make it a list
+                twitchUsers = collection.Cast<string>().ToList();
+
+                //repopulate the listview 
+                foreach (var item in twitchUsers) {
                     followerListView.Items.Add(item);
+                    totalFollowersLabel.Text = "Total Followers: " + followerListView.Items.Count;
+
                 }
+
+                //reset the width of the listview
                 Usernames.Width = followerListView.Size.Width - 21;
             }
             //number of followed accounts
             if (Properties.Settings.Default.numberOfFollowedUsers != null) {
                 totalFollowersLabel.Text = "Total Followers: " + Properties.Settings.Default.numberOfFollowedUsers;
             }
+            
+            //Console.WriteLine(generateUsernameStringDelimited());
+            notifyIcon.Icon = System.Drawing.SystemIcons.Application;
+            notifyIcon.BalloonTipText = "woo notify";
+           // notifyIcon.Text = "Currently Live\n" + ;
+            //notifyIcon.ShowBalloonTip(100);
+
 
         }
+
         private void getLiveStatus() {
 
+            
             var client = new RestClient();
-            client.BaseUrl = new Uri("https://api.twitch.tv/kraken/streams?channel=");
+            client.BaseUrl = new Uri("https://api.twitch.tv/kraken/streams?channel=" + generateUsernameString());
 
             //usernameString += "PyrionFlax";
 
             var request = new RestRequest();
             request.Method = Method.GET;
-            request.Resource = usernameString +"Pyrionflax" + "?limit=100";
             request.AddHeader("Client-ID", "dsf248t4b6aririduqsh94h9ypzrb0i");
             request.AddHeader("accept", "application/vnd.twitchtv.v3+json");
             request.RequestFormat = DataFormat.Json;
-            Console.WriteLine(usernameString);
+
             IRestResponse response = client.Execute(request);
 
+
             var rootObj = JsonConvert.DeserializeObject<RootObject>(response.Content);
-            Console.WriteLine(response.Content);
-            foreach (var row in rootObj.streams) {
-                Console.WriteLine(row.channel.display_name);
+
+            if (rootObj._total == 0) {
+                Console.WriteLine("Its Null Jim");
+                //also delete everyone from the list
             }
-            
+            else {
+
+                List<LiveStatus> updatedList = new List<LiveStatus> { };
+
+                
+
+                foreach (var row in rootObj.streams) {
+
+                   updatedList.Add(new LiveStatus() { user = row.channel.display_name, game = row.channel.game, status = row.channel.status, viewers = row.viewers });
+
+                    if (!currentLiveListCheck(row.channel.display_name)) {
+                        //check if now live, and not in the list
+                        currentLive.Add(new LiveStatus() { user = row.channel.display_name, game = row.channel.game, status = row.channel.status, viewers = row.viewers });
+                        Console.Write(row.channel.display_name);
+                        Console.WriteLine(": Added to List");
+                    }else if(currentLiveListCheck(row.channel.display_name)) {
+                        //still live
+                        Console.Write(row.channel.display_name);
+                        Console.WriteLine(": Still live");
+                    }
+                  //  currentLive.Add(new LiveStatus() { user = row.channel.display_name, game = row.channel.game, status = row.channel.status, viewers = row.viewers });
+                    //Console.WriteLine(currentLive.Count());
+                   
+
+                }
+                
+            }
+
+            //do the deleting things
+               // foreach (var currentlyLiveUser in currentLive) {
+               //     if (!user.Contains(currentlyLiveUser.user)) {
+               //         Console.Write(user);
+               //         Console.WriteLine(": deleted");
+               //     }
+               // }
+
+            //notifyIcon.Text = "Currently Live\n" +  + "\n";
 
         }
+       
+        private bool currentLiveListCheck(string userToCheck) {
+            //check for still streaming
+            foreach (var liveUsers in currentLive) {
+                if (liveUsers.user == userToCheck) {
+                    return true;
+                }
+            }
+            //if nothing is returned at this point then add to list
+            return false;
+        } 
+        private bool deleteCheck() {
+
+            return false;
+        }
+
 
         private void button2_Click(object sender, EventArgs e) {
             getLiveStatus();
         }
         
-        private void textBox2_TextChanged(object sender, EventArgs e) {
-
-        }
-        
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
-            Application.Exit();
+            Environment.Exit(0);
         }
 
         private void getTwitchUsers_Click(object sender, EventArgs e) {
@@ -119,37 +188,113 @@ namespace TwitchLiveCounter
 
             //loop through follows
             foreach (var row in rootObj.follows) {
-                followerListView.Items.Add(row.channel.display_name);
-                usernameString += row.channel.display_name + ",";
+                twitchUsers.Add(row.channel.display_name);
             }
-
-            //set the total followers CHANGE TO USE COUNT ON THE LIST VARIABLE
-            totalFollowersLabel.Text = "Total Followers: " + rootObj._total.ToString();
             
             //add 
-            var followerList = new List<string>();
-            foreach (ListViewItem Item in followerListView.Items) {
-                followerList.Add(Item.Text.ToString());
+            //var followerList = new List<string>();
+           // foreach (ListViewItem Item in followerListView.Items) {
+           //     followerList.Add(Item.Text.ToString());
+          //  }
+            //add users from the twitchUsers list to the listview to be displayed to the user
+            foreach (var Item in twitchUsers) {
+                followerListView.Items.Add(Item);
+                totalFollowersLabel.Text = "Total Followers: " + followerListView.Items.Count;
             }
-
+            
             //create string collection from list of strings
             StringCollection collection = new StringCollection();
-            collection.AddRange(followerList.ToArray());
+            collection.AddRange(twitchUsers.ToArray());
 
             //save settings to Settings.settings
+            Properties.Settings.Default.timerInterval = timerInterval;
             Properties.Settings.Default.followedUsersSettingsCollection = collection;
             Properties.Settings.Default.numberOfFollowedUsers = rootObj._total.ToString();
             Properties.Settings.Default.twitchUsernameSettings = twitchUsername;
-            Properties.Settings.Default.Save();
             
         }
 
+        //pass in the list, get a really not fancy string back with commas
+        private string generateUsernameString() {
+            string usernameString = "";
+            foreach (var user in twitchUsers) {
+                usernameString += user + ",";
+            }
+            return usernameString;
+        }
+        
         private void twitchUsernameTextBox_TextChanged(object sender, EventArgs e) {
 
+        }
+
+        private void clearAllSettingsToolStripMenuItem_Click(object sender, EventArgs e) {
+
+            updateTimer.Interval = timerInterval;
+            twitchUsers.Clear();
+            followerListView.Items.Clear();
+            twitchUsernameTextBox.Clear();
+            twitchUsername = "";
+            Properties.Settings.Default.Reset();
+        }
+
+        //save the username, list of users, and TODO update interval
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e) {
+            Properties.Settings.Default.Save();
+        }
+
+        private void TwitchLiveCounter_FormClosing(Object sender, FormClosingEventArgs e) {
+
+            e.Cancel = true;
+            this.Hide();
+            notifyIcon.Visible = true;
+
+        }
+
+        private void exitToolStripMenuItem1_Click(object sender, EventArgs e) {
+            notifyIcon.Visible = false;
+            Environment.Exit(0);
+        }
+
+        private void maximizeToolStripMenuItem_Click(object sender, EventArgs e) {
+            //TwitchLiveCounter.ActiveForm.WindowState = FormWindowState.Normal;
+            this.Show();
+        }
+
+        private void updateTimer_Tick(object sender, EventArgs e) {
+            getLiveStatus();
+        }
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e) {
+
+            //validation
+            e.Handled = char.IsNumber(e.KeyChar) || (e.KeyChar == 8) ? false : true;
+        }
+
+        private void textBox2_Leave(object sender, EventArgs e) {
+            //default 5
+            
+            try {
+                timerInterval = Int32.Parse(textBox2.Text);
+            }
+            catch (FormatException f) {
+                Console.WriteLine(f.Message);
+            }
+            //update the timer to the specified interval converting minutes to miliseconds
+            updateTimer.Interval = timerInterval * 60000;
         }
     }
 
     //twitch GET /users/:user/follows/channels
+
+
+    public class LiveStatus {
+        public string user { get; set; }
+        public string status { get; set; }
+        public string game { get; set; }
+        public int viewers { get; set; }
+        public bool live { get; set; }
+
+    }
 
     public class Rootobject {
         public Follow[] follows { get; set; }
