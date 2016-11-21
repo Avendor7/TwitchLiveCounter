@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Windows.Forms;
 using RestSharp;
 using Newtonsoft.Json;
 using System.IO;
-using System.Collections.Specialized;
 using System.Runtime.Serialization.Formatters.Binary;
 
 /*
@@ -17,8 +14,7 @@ using System.Runtime.Serialization.Formatters.Binary;
  */
 
 
-namespace TwitchLiveCounter
-{
+namespace TwitchLiveCounter {
     public partial class TwitchLiveCounter : Form {
 
         private string twitchUsername = "Avendor7";
@@ -28,14 +24,21 @@ namespace TwitchLiveCounter
 
         private int timerInterval = 300000;
 
-        public TwitchLiveCounter(){
+        public TwitchLiveCounter() {
             InitializeComponent();
-            
+
         }
 
         private void TwitchLiveCounter_Load(object sender, EventArgs e) {
 
+
+
+
             //start the timer
+            if (Properties.Settings.Default.timerInterval >= 0) {
+                updateTimer.Interval = Properties.Settings.Default.timerInterval;
+            }
+            
             updateTimer.Start();
 
             //load all of the settings from persistant storage
@@ -45,7 +48,7 @@ namespace TwitchLiveCounter
                 twitchUsernameTextBox.Text = Properties.Settings.Default.twitchUsernameSettings;
             }
             //followed accounts with master list
-            Console.WriteLine("userlist: " + Properties.Settings.Default.userList);
+
             if (Properties.Settings.Default.userList != "") {
                 //load in the master list
                 masterUserList = LoadUsers();
@@ -61,18 +64,18 @@ namespace TwitchLiveCounter
             }
 
             
-            
+
             //Console.WriteLine(generateUsernameStringDelimited());
             notifyIcon.Icon = System.Drawing.SystemIcons.Application;
-            notifyIcon.BalloonTipText = "woo notify";
-            // notifyIcon.Text = "Currently Live\n" + ;
-            //notifyIcon.ShowBalloonTip(100);
-            
+
+            notifyIcon.Text = "Twitch Live Counter";
+
+            updateTimer_Tick(null, EventArgs.Empty);
         }
 
         private void getLiveStatus() {
 
-            
+
             var client = new RestClient();
             client.BaseUrl = new Uri("https://api.twitch.tv/kraken/streams?channel=" + generateUsernameString());
 
@@ -94,61 +97,45 @@ namespace TwitchLiveCounter
                 //also delete everyone from the list
             }
             else {
-                
                 foreach (var row in rootObj.streams) {
+                    //only add the new user if it doesn't exist
 
-                   updatedUserList.Add(new UserList() { user = row.channel.display_name, game = row.channel.game, status = row.channel.status, viewers = row.viewers });
-
-                    if (!currentLiveListCheck(row.channel.display_name)) {
-                        //check if now live, and not in the list
-                        updatedUserList.Add(new UserList() { user = row.channel.display_name, game = row.channel.game, status = row.channel.status, viewers = row.viewers });
-                        Console.Write(row.channel.display_name);
-                        Console.WriteLine(": Added to List");
-                    }else if(currentLiveListCheck(row.channel.display_name)) {
-                        //still live
-                        Console.Write(row.channel.display_name);
-                        Console.WriteLine(": Still live");
+                    if (!updatedUserList.Exists(e => e.user == row.channel.display_name)) {
+                        updatedUserList.Add(new UserList() { user = row.channel.display_name, game = row.channel.game, status = row.channel.status, viewers = row.viewers, live = true });
+                        //TODO test multiple people going live at once
+                        notifyIcon.BalloonTipText = row.channel.display_name + " is now live";
+                        notifyIcon.ShowBalloonTip(100);
                     }
-                  //  currentLive.Add(new LiveStatus() { user = row.channel.display_name, game = row.channel.game, status = row.channel.status, viewers = row.viewers });
-                    //Console.WriteLine(currentLive.Count());
-                   
-
                 }
-                
+                checkOffline();
+                checkLive();
+                updatedUserList.Clear();
             }
-
-            //do the deleting things
-               // foreach (var currentlyLiveUser in currentLive) {
-               //     if (!user.Contains(currentlyLiveUser.user)) {
-               //         Console.Write(user);
-               //         Console.WriteLine(": deleted");
-               //     }
-               // }
-
-            //notifyIcon.Text = "Currently Live\n" +  + "\n";
-
+            
         }
-       
-        private bool currentLiveListCheck(string userToCheck) {
-            //check for still streaming
-            foreach (var liveUsers in updatedUserList) {
-                if (liveUsers.user == userToCheck) {
-                    return true;
+        private void checkOffline() {
+            foreach (var streamer in masterUserList) {
+                if (streamer.live == true && !updatedUserList.Exists(e => e.user == streamer.user)) {
+                    streamer.live = false;
+                    notifyIcon.BalloonTipText = streamer.user + " is now offline";
+                    notifyIcon.ShowBalloonTip(100);
                 }
             }
-            //if nothing is returned at this point then add to list
-            return false;
-        } 
-        private bool deleteCheck() {
-
-            return false;
         }
 
-
+        private void checkLive() {
+            //set everyone who is live to live, it will just overwrite anyone who is already live, plus include updated information
+            foreach (var streamer in updatedUserList) {
+                var index = masterUserList.FindIndex(a => a.user == streamer.user);
+                //update the entire object
+                masterUserList[index] = streamer;
+            }
+        }
+        
         private void button2_Click(object sender, EventArgs e) {
             getLiveStatus();
         }
-        
+
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
             notifyIcon.Visible = false;
             Environment.Exit(0);
@@ -159,7 +146,7 @@ namespace TwitchLiveCounter
             //followerListView.Clear();
             Usernames.Width = followerListView.Size.Width - 21;
 
-            
+
             twitchUsername = twitchUsernameTextBox.Text;
 
             //create rest client
@@ -175,7 +162,7 @@ namespace TwitchLiveCounter
 
             //execute request
             IRestResponse response = client.Execute(request);
-            
+
             //parse returned content
             var rootObj = JsonConvert.DeserializeObject<Rootobject>(response.Content);
 
@@ -185,22 +172,18 @@ namespace TwitchLiveCounter
                 masterUserList.Add(new UserList() { user = row.channel.display_name, game = row.channel.game, status = row.channel.status, viewers = 0, live = false });
 
             }
-          
+
             //add users from the masteruserlist to the listview to be displayed to the user
             foreach (var Item in masterUserList) {
                 followerListView.Items.Add(Item.user);
                 totalFollowersLabel.Text = "Total Followers: " + followerListView.Items.Count;
             }
-            
-            //create string collection from list of strings
-            StringCollection collection = new StringCollection();
-            collection.AddRange(twitchUsers.ToArray());
 
             //save settings to Settings.settings
             saveMasterList(masterUserList);
             Properties.Settings.Default.timerInterval = timerInterval;
             Properties.Settings.Default.twitchUsernameSettings = twitchUsername;
-            
+
         }
 
         //pass in the list, get a really not fancy string back with commas
@@ -212,7 +195,7 @@ namespace TwitchLiveCounter
 
             return usernameString;
         }
-        
+
         private void twitchUsernameTextBox_TextChanged(object sender, EventArgs e) {
 
         }
@@ -260,7 +243,7 @@ namespace TwitchLiveCounter
         }
 
         private void textBox2_Leave(object sender, EventArgs e) {
-            
+
             //grab the minute value when focus from the textbox is lost, might be a better way of doing this
             try {
                 timerInterval = Int32.Parse(textBox2.Text);
@@ -275,7 +258,6 @@ namespace TwitchLiveCounter
         void saveMasterList(List<UserList> userlist) {
             using (MemoryStream ms = new MemoryStream()) {
                 BinaryFormatter bf = new BinaryFormatter();
-                
                 bf.Serialize(ms, userlist);
                 ms.Position = 0;
                 byte[] buffer = new byte[(int)ms.Length];
@@ -385,7 +367,7 @@ namespace TwitchLiveCounter
         public string teams { get; set; }
         public string videos { get; set; }
     }
-    
+
     public class Links2 {
         public string self { get; set; }
     }

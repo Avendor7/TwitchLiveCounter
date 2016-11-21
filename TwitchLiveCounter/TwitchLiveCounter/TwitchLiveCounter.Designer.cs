@@ -122,6 +122,7 @@
             this.textBox2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.textBox2.Size = new System.Drawing.Size(30, 20);
             this.textBox2.TabIndex = 6;
+            this.textBox2.Text = "5";
             this.textBox2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox2_KeyPress);
             this.textBox2.Leave += new System.EventHandler(this.textBox2_Leave);
             // 
