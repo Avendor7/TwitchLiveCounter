@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TwitchLiveCounter));
             this.getTwitchUsers = new System.Windows.Forms.Button();
             this.twitchUsernameTextBox = new System.Windows.Forms.TextBox();
             this.followerListView = new System.Windows.Forms.ListView();
@@ -202,7 +203,9 @@
             // 
             // notifyIcon
             // 
+            this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.notifyIcon.ContextMenuStrip = this.contextMenuStripNotifyIcon;
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Visible = true;
             // 
             // contextMenuStripNotifyIcon
@@ -247,6 +250,7 @@
             this.Controls.Add(this.getTwitchUsers);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

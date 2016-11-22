@@ -35,8 +35,11 @@ namespace TwitchLiveCounter {
 
 
             //start the timer
-            if (Properties.Settings.Default.timerInterval >= 0) {
+            Console.WriteLine(Properties.Settings.Default.timerInterval);
+            if (Properties.Settings.Default.timerInterval > 100) {
                 updateTimer.Interval = Properties.Settings.Default.timerInterval;
+            }else {
+                updateTimer.Interval = timerInterval;
             }
             
             updateTimer.Start();
@@ -70,7 +73,7 @@ namespace TwitchLiveCounter {
 
             notifyIcon.Text = "Twitch Live Counter";
 
-            updateTimer_Tick(null, EventArgs.Empty);
+            //updateTimer_Tick(null, EventArgs.Empty);
         }
 
         private void getLiveStatus() {
@@ -93,7 +96,7 @@ namespace TwitchLiveCounter {
             var rootObj = JsonConvert.DeserializeObject<RootObject>(response.Content);
 
             if (rootObj._total == 0) {
-                Console.WriteLine("Its Null Jim");
+                //no one is live
                 //also delete everyone from the list
             }
             else {
@@ -103,8 +106,10 @@ namespace TwitchLiveCounter {
                     if (!updatedUserList.Exists(e => e.user == row.channel.display_name)) {
                         updatedUserList.Add(new UserList() { user = row.channel.display_name, game = row.channel.game, status = row.channel.status, viewers = row.viewers, live = true });
                         //TODO test multiple people going live at once
-                        notifyIcon.BalloonTipText = row.channel.display_name + " is now live";
-                        notifyIcon.ShowBalloonTip(100);
+                       // if () {
+                            notifyIcon.BalloonTipText = row.channel.display_name + " is now live";
+                            notifyIcon.ShowBalloonTip(100);
+                       // }
                     }
                 }
                 checkOffline();
