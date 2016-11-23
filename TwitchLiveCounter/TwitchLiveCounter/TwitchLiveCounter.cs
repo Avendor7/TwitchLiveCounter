@@ -6,14 +6,6 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-/*
- * TODO
- * 1) create installer / uninstaller
- * 2) dynamically change system icon
- * 4) 
- */
-
-
 namespace TwitchLiveCounter {
     public partial class TwitchLiveCounter : Form {
 
@@ -30,12 +22,7 @@ namespace TwitchLiveCounter {
         }
 
         private void TwitchLiveCounter_Load(object sender, EventArgs e) {
-
-
-
-
             //start the timer
-            Console.WriteLine(Properties.Settings.Default.timerInterval);
             if (Properties.Settings.Default.timerInterval > 100) {
                 updateTimer.Interval = Properties.Settings.Default.timerInterval;
             }else {
@@ -65,9 +52,6 @@ namespace TwitchLiveCounter {
                 //reset the width of the listview
                 Usernames.Width = followerListView.Size.Width - 21;
             }
-
-            
-
             //Console.WriteLine(generateUsernameStringDelimited());
             notifyIcon.Icon = System.Drawing.SystemIcons.Application;
 
@@ -81,8 +65,7 @@ namespace TwitchLiveCounter {
 
             var client = new RestClient();
             client.BaseUrl = new Uri("https://api.twitch.tv/kraken/streams?channel=" + generateUsernameString());
-
-            //usernameString += "PyrionFlax";
+            
 
             var request = new RestRequest();
             request.Method = Method.GET;
@@ -92,32 +75,31 @@ namespace TwitchLiveCounter {
 
             IRestResponse response = client.Execute(request);
 
-
             var rootObj = JsonConvert.DeserializeObject<RootObject>(response.Content);
 
+            
+
             if (rootObj._total == 0) {
-                //no one is live
-                //also delete everyone from the list
+                //check offline
+                //TODO have a message if the last person goes offline with display_name and that there is now no one online
+                checkOffline();
+                notifyIcon.BalloonTipText = "No one is live";
+                notifyIcon.ShowBalloonTip(100);
             }
             else {
                 foreach (var row in rootObj.streams) {
-                    //only add the new user if it doesn't exist
-
-                    if (!updatedUserList.Exists(e => e.user == row.channel.display_name)) {
-                        updatedUserList.Add(new UserList() { user = row.channel.display_name, game = row.channel.game, status = row.channel.status, viewers = row.viewers, live = true });
-                        //TODO test multiple people going live at once
-                       // if () {
-                            notifyIcon.BalloonTipText = row.channel.display_name + " is now live";
-                            notifyIcon.ShowBalloonTip(100);
-                       // }
-                    }
+                    //add users to the updated list
+                    updatedUserList.Add(new UserList() { user = row.channel.display_name, game = row.channel.game, status = row.channel.status, viewers = row.viewers, live = true });
+                    
                 }
-                checkOffline();
+                //do all of the checks and clear the list
                 checkLive();
+                checkOffline();
                 updatedUserList.Clear();
             }
             
         }
+        
         private void checkOffline() {
             foreach (var streamer in masterUserList) {
                 if (streamer.live == true && !updatedUserList.Exists(e => e.user == streamer.user)) {
@@ -133,6 +115,10 @@ namespace TwitchLiveCounter {
             foreach (var streamer in updatedUserList) {
                 var index = masterUserList.FindIndex(a => a.user == streamer.user);
                 //update the entire object
+                if (!masterUserList[index].live == true) {
+                    notifyIcon.BalloonTipText = streamer.user + " is now live";
+                    notifyIcon.ShowBalloonTip(100);
+                }
                 masterUserList[index] = streamer;
             }
         }
@@ -150,8 +136,7 @@ namespace TwitchLiveCounter {
 
             //followerListView.Clear();
             Usernames.Width = followerListView.Size.Width - 21;
-
-
+            
             twitchUsername = twitchUsernameTextBox.Text;
 
             //create rest client
@@ -282,8 +267,7 @@ namespace TwitchLiveCounter {
     }
 
     //twitch GET /users/:user/follows/channels
-
-    [Serializable()]
+    
     public class UserList {
         public string user { get; set; }
         public string status { get; set; }
