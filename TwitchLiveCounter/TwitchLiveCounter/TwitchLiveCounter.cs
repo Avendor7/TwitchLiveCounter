@@ -267,7 +267,7 @@ namespace TwitchLiveCounter {
     }
 
     //twitch GET /users/:user/follows/channels
-    
+    [Serializable()]
     public class UserList {
         public string user { get; set; }
         public string status { get; set; }
