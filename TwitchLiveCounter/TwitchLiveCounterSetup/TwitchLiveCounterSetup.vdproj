@@ -39,6 +39,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E22D0A4EE12A4F7997F452B2A7AE39C6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_DBFE88D6589E45D2B27737A9D7999341"
         "MsmSig" = "8:_UNDEFINED"
@@ -249,6 +255,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E22D0A4EE12A4F7997F452B2A7AE39C6"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\..\\Downloads\\Glitch_Purple_RGB.ico"
+            "TargetName" = "8:Glitch_Purple_RGB.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_2DDDC33D1BAB44D6AA910C5006F029B5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -317,7 +343,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:TwitchLiveCounterSetup"
         "ProductCode" = "8:{D53F2291-A4DA-4C52-8273-7B9EC27D6283}"
-        "PackageCode" = "8:{F6095FB6-3B7E-477C-ACE8-EFADE447A0D4}"
+        "PackageCode" = "8:{530AE1E1-C53A-4052-97C0-B6DB331BDF2D}"
         "UpgradeCode" = "8:{2F45B735-5408-465C-A698-0E7625401585}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -439,7 +465,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B2F9B099BC0F41D0B9052C561A7B4AF4"
             {
-            "Name" = "8:TwitchLiveCounter (Active)"
+            "Name" = "8:TwitchLiveCounter"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -448,12 +474,12 @@
             "Target" = "8:_DBFE88D6589E45D2B27737A9D7999341"
             "Folder" = "8:_3FB0217DBCFD410792165A2EB6F92A6E"
             "WorkingFolder" = "8:_2DDDC33D1BAB44D6AA910C5006F029B5"
-            "Icon" = "8:"
+            "Icon" = "8:_E22D0A4EE12A4F7997F452B2A7AE39C6"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D666179840964DCE981DB080CD8CFAC1"
             {
-            "Name" = "8:TwitchLiveCounter (Active)"
+            "Name" = "8:TwitchLiveCounter"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -462,7 +488,7 @@
             "Target" = "8:_DBFE88D6589E45D2B27737A9D7999341"
             "Folder" = "8:_6DC05683E79B4A79ADE839348A1FA527"
             "WorkingFolder" = "8:_2DDDC33D1BAB44D6AA910C5006F029B5"
-            "Icon" = "8:"
+            "Icon" = "8:_E22D0A4EE12A4F7997F452B2A7AE39C6"
             "Feature" = "8:"
             }
         }
