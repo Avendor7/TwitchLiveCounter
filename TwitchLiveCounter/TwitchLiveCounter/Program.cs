@@ -16,7 +16,7 @@ namespace TwitchLiveCounter
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TwitchLiveCounter());
+            Application.Run(new Taskbar());
         }
     }
 }

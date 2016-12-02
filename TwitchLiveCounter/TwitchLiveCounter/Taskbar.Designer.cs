@@ -59,6 +59,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Taskbar";
             this.Text = "Taskbar";
+            this.Deactivate += new System.EventHandler(this.closeform);
             this.Load += new System.EventHandler(this.Taskbar_Load);
             this.ResumeLayout(false);
 
