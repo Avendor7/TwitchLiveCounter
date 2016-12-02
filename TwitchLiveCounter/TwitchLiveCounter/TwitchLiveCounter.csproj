@@ -72,6 +72,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SimpleJson.cs" />
+    <Compile Include="StreamersUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StreamersUserControl.Designer.cs">
+      <DependentUpon>StreamersUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Taskbar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Taskbar.Designer.cs">
+      <DependentUpon>Taskbar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TwitchAPI.cs" />
     <Compile Include="TwitchLiveCounter.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,6 +102,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="StreamersUserControl.resx">
+      <DependentUpon>StreamersUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Taskbar.resx">
+      <DependentUpon>Taskbar.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TwitchLiveCounter.resx">
       <DependentUpon>TwitchLiveCounter.cs</DependentUpon>
     </EmbeddedResource>
