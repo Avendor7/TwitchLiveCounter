@@ -37,7 +37,7 @@ namespace TwitchLiveCounter {
 
         private void closeform(object sender, EventArgs e) {
             //uncomment to close the form when focus on the form is lost
-            // Close();
+            this.Close();
         }
 
         private void SetFormPosition() {
@@ -46,6 +46,11 @@ namespace TwitchLiveCounter {
             leftpos = (Screen.PrimaryScreen.WorkingArea.Right - 2) - Width;
             toppos = (Screen.PrimaryScreen.WorkingArea.Bottom - 2) - Height;
             this.Location = new Point(leftpos, toppos);
+        }
+
+        private void tmrUpdate_Tick(object sender, EventArgs e) {
+            
+            
         }
     }
 }

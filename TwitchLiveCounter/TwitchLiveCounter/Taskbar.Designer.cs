@@ -23,8 +23,10 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.btnUpdateNow = new System.Windows.Forms.Button();
             this.btnSettings = new System.Windows.Forms.Button();
+            this.tmrUpdate = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // btnUpdateNow
@@ -49,6 +51,10 @@
             this.btnSettings.UseVisualStyleBackColor = true;
             this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
             // 
+            // tmrUpdate
+            // 
+            this.tmrUpdate.Tick += new System.EventHandler(this.tmrUpdate_Tick);
+            // 
             // Taskbar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -69,5 +75,6 @@
 
         private System.Windows.Forms.Button btnUpdateNow;
         private System.Windows.Forms.Button btnSettings;
+        private System.Windows.Forms.Timer tmrUpdate;
     }
 }
