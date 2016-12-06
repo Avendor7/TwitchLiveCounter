@@ -71,6 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SettingsAccess.cs" />
     <Compile Include="SimpleJson.cs" />
     <Compile Include="StreamersUserControl.cs">
       <SubType>UserControl</SubType>
@@ -85,6 +86,7 @@
       <DependentUpon>Taskbar.cs</DependentUpon>
     </Compile>
     <Compile Include="TwitchAPI.cs" />
+    <Compile Include="TwitchAPIAccess.cs" />
     <Compile Include="TwitchLiveCounter.cs">
       <SubType>Form</SubType>
     </Compile>
