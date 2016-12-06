@@ -19,9 +19,29 @@ namespace TwitchLiveCounter {
                 return instance;
             }
         }
-        public string returnString() {
-            return "hello world";
-        } 
+        
+        public string getUserList() {
+            return Properties.Settings.Default.userList;
+        }
+        public void setUserList(string strList) {
+            strList = Properties.Settings.Default.userList;
+        }
+
+        public string getTwitchUsername() {
+            return Properties.Settings.Default.twitchUsernameSettings;
+        }
+        public void setTwitchUsername(string strUsername) {
+            strUsername = Properties.Settings.Default.twitchUsernameSettings;
+        }
+
+        public int getTimerInterval() {
+            return Properties.Settings.Default.timerInterval;
+        }
+        public void setTimerInterval(int intTimerInterval) {
+            intTimerInterval = Properties.Settings.Default.timerInterval;
+        }
+
+
 
     }
 }
