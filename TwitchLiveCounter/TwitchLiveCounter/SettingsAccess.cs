@@ -40,8 +40,6 @@ namespace TwitchLiveCounter {
         public void setTimerInterval(int intTimerInterval) {
             intTimerInterval = Properties.Settings.Default.timerInterval;
         }
-
-
-
+        
     }
 }
